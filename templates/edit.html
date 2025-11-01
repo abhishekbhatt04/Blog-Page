@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Post - BlogSphere{% endblock %}
+
+{% block content %}
+<div class="form-section">
+    <div class="form-container">
+        <div class="form-header">
+            <h1><i class="fas fa-edit"></i> Edit Post</h1>
+            <p>Update your post content</p>
+        </div>
+        
+        {% if post.has_image() %}
+        <div class="current-image">
+            <h3>Current Image</h3>
+            <div class="image-preview">
+                <img src="{{ post.get_image_url() }}" alt="{{ post.title }}">
+                <a href="{{ url_for('remove_image', post_id=post.id) }}" class="btn btn-delete btn-small" 
+                   onclick="return confirm('Are you sure you want to remove this image?')">
+                    <i class="fas fa-trash"></i> Remove Image
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        
+        <form method="POST" class="post-form" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-group">
+                <label for="title">
+                    <i class="fas fa-heading"></i> Post Title
+                </label>
+                {{ form.title(class="form-control", placeholder="Enter a captivating title") }}
+                {% for error in form.title.errors %}
+                <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="form-group">
+                <label for="author">
+                    <i class="fas fa-user"></i> Author Name
+                </label>
+                {{ form.author(class="form-control", placeholder="Your name or pen name") }}
+                {% for error in form.author.errors %}
+                <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="form-group">
+                <label for="image">
+                    <i class="fas fa-image"></i> {% if post.has_image() %}Replace Image{% else %}Post Image{% endif %}
+                </label>
+                <div class="file-upload-wrapper">
+                    {{ form.image(class="file-upload-input", accept="image/*") }}
+                    <div class="file-upload-display">
+                        <div class="file-upload-preview">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Click to choose an image or drag and drop</span>
+                            <small>Supported formats: JPG, PNG, GIF, WebP (Max: 16MB)</small>
+                        </div>
+                    </div>
+                </div>
+                {% for error in form.image.errors %}
+                <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="form-group">
+                <label for="content">
+                    <i class="fas fa-edit"></i> Content
+                </label>
+                {{ form.content(class="form-control", placeholder="Write your post content here...", rows="12") }}
+                {% for error in form.content.errors %}
+                <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="form-actions">
+                {{ form.submit(class="btn btn-primary btn-large") }}
+                <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
