@@ -1,4 +1,3 @@
-// Blog application JavaScript with enhanced features
 document.addEventListener('DOMContentLoaded', function() {
     console.log('BlogSphere loaded successfully!');
     
@@ -31,7 +30,7 @@ function initAutoResizeTextareas() {
     });
 }
 
-// Enhanced delete confirmation
+
 function initDeleteConfirmations() {
     const deleteButtons = document.querySelectorAll('.btn-delete');
     deleteButtons.forEach(button => {
@@ -47,7 +46,7 @@ function initDeleteConfirmations() {
     });
 }
 
-// Flash message auto-hide with animation
+
 function initFlashMessages() {
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(alert => {
@@ -70,7 +69,7 @@ function initFlashMessages() {
         alert.style.display = 'flex';
         alert.appendChild(closeBtn);
         
-        // Auto-hide after 5 seconds
+        
         setTimeout(() => {
             if (alert.parentNode) {
                 alert.style.opacity = '0';
@@ -80,7 +79,7 @@ function initFlashMessages() {
     });
 }
 
-// Form validation enhancement
+
 function initFormValidation() {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
@@ -97,12 +96,12 @@ function initFormValidation() {
                 }
             });
             
-            // Validate file size
+            
             const fileInputs = this.querySelectorAll('input[type="file"]');
             fileInputs.forEach(input => {
                 if (input.files.length > 0) {
                     const file = input.files[0];
-                    const maxSize = 16 * 1024 * 1024; // 16MB
+                    const maxSize = 16 * 1024 * 1024; 
                     
                     if (file.size > maxSize) {
                         isValid = false;
@@ -146,7 +145,7 @@ function clearFieldError(input) {
     }
 }
 
-// Loading states for buttons
+
 function initLoadingStates() {
     const submitButtons = document.querySelectorAll('button[type="submit"]');
     submitButtons.forEach(button => {
@@ -155,7 +154,7 @@ function initLoadingStates() {
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             this.disabled = true;
             
-            // Revert after 5 seconds if still on page (form submission failed)
+            
             setTimeout(() => {
                 if (this.disabled) {
                     this.innerHTML = originalText;
@@ -167,7 +166,7 @@ function initLoadingStates() {
     });
 }
 
-// Character counter for textareas
+
 function initCharacterCounter() {
     const contentTextarea = document.getElementById('content');
     if (contentTextarea) {
@@ -208,7 +207,7 @@ function initCharacterCounter() {
     }
 }
 
-// Image upload preview
+
 function initImageUploadPreview() {
     const fileInputs = document.querySelectorAll('.file-upload-input');
     
@@ -219,7 +218,7 @@ function initImageUploadPreview() {
         input.addEventListener('change', function(e) {
             const file = this.files[0];
             if (file) {
-                // Validate file type
+                
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
                 if (!allowedTypes.includes(file.type)) {
                     showNotification('Please select a valid image file (JPG, PNG, GIF, WebP).', 'error');
@@ -227,8 +226,8 @@ function initImageUploadPreview() {
                     return;
                 }
                 
-                // Validate file size
-                const maxSize = 16 * 1024 * 1024; // 16MB
+                
+                const maxSize = 16 * 1024 * 1024; 
                 if (file.size > maxSize) {
                     showNotification('File size must be less than 16MB.', 'error');
                     this.value = '';
@@ -238,13 +237,12 @@ function initImageUploadPreview() {
                 const reader = new FileReader();
                 
                 reader.onload = function(e) {
-                    // Remove existing preview if any
                     const existingImg = preview.querySelector('img');
                     if (existingImg) {
                         existingImg.remove();
                     }
                     
-                    // Create new image preview
+                    
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.style.cssText = `
@@ -379,21 +377,21 @@ function initSmoothScrolling() {
 // Keyboard shortcuts
 function initKeyboardShortcuts() {
     document.addEventListener('keydown', function(e) {
-        // Ctrl + N for new post (when not in input field)
+        
         if (e.ctrlKey && e.key === 'n' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
             e.preventDefault();
             const newPostBtn = document.querySelector('a[href*="create"]');
             if (newPostBtn) newPostBtn.click();
         }
         
-        // Escape key to go back
+    
         if (e.key === 'Escape') {
             if (document.referrer && !window.location.href.includes('/create')) {
                 window.history.back();
             }
         }
         
-        // Ctrl + / for help
+        
         if (e.ctrlKey && e.key === '/') {
             e.preventDefault();
             showNotification('Keyboard shortcuts: Ctrl+N (New Post), Escape (Go Back)', 'info');
@@ -401,7 +399,7 @@ function initKeyboardShortcuts() {
     });
 }
 
-// Notification system
+
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `alert alert-${type}`;
@@ -430,14 +428,14 @@ function showNotification(message, type = 'info') {
     
     document.body.appendChild(notification);
     
-    // Add close functionality
+    
     const closeBtn = notification.querySelector('button');
     closeBtn.addEventListener('click', () => {
         notification.style.opacity = '0';
         setTimeout(() => notification.remove(), 500);
     });
     
-    // Auto-remove after 5 seconds
+    
     setTimeout(() => {
         if (notification.parentNode) {
             notification.style.opacity = '0';
@@ -446,7 +444,6 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 
-// Add CSS for animations
 function addAnimationStyles() {
     const style = document.createElement('style');
     style.textContent = `
@@ -484,10 +481,9 @@ function addAnimationStyles() {
     document.head.appendChild(style);
 }
 
-// Initialize animation styles
 addAnimationStyles();
 
-// Image optimization helper
+
 function optimizeImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -529,7 +525,6 @@ function optimizeImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) {
     });
 }
 
-// Utility function to format file size
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -538,7 +533,6 @@ function formatFileSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-// Lazy loading for images
 function initLazyLoading() {
     const images = document.querySelectorAll('img[data-src]');
     
@@ -556,18 +550,15 @@ function initLazyLoading() {
     images.forEach(img => imageObserver.observe(img));
 }
 
-// Initialize lazy loading
 initLazyLoading();
 
-// Enhanced error handling
 window.addEventListener('error', function(e) {
     console.error('JavaScript Error:', e.error);
     showNotification('An error occurred. Please check the console for details.', 'error');
 });
 
-// Performance monitoring
 window.addEventListener('load', function() {
-    // Log performance metrics
+    
     if (window.performance) {
         const perfData = window.performance.timing;
         const loadTime = perfData.loadEventEnd - perfData.navigationStart;
@@ -579,9 +570,10 @@ window.addEventListener('load', function() {
     }
 });
 
-// Export functions for global access (if needed)
+// Export functions for global access
 window.BlogApp = {
     showNotification,
     optimizeImage,
     formatFileSize
 };
+
