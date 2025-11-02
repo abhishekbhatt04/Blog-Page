@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 Config.init_app(app)
 
-# Initialize extensions
+# Initialize database
 db.init_app(app)
 
 # Flask-Login setup
@@ -27,37 +27,27 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 def save_image(image_file):
     if image_file and allowed_file(image_file.filename):
-        # Generate unique filename
         file_ext = image_file.filename.rsplit('.', 1)[1].lower()
         filename = f"{uuid.uuid4().hex}.{file_ext}"
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         
-        # Resize and save image
         image = Image.open(image_file)
-        
-        # Resize to max 1200px width while maintaining aspect ratio
         max_size = (1200, 1200)
         image.thumbnail(max_size, Image.Resampling.LANCZOS)
         
-        # Convert to RGB if necessary
         if image.mode in ('RGBA', 'P'):
             image = image.convert('RGB')
         
-        # Save optimized image
         image.save(filepath, 'JPEG', quality=85, optimize=True)
-        
         return filename
     return None
 
-# Create tables and admin user
+# Create tables - NO db.drop_all()!
 with app.app_context():
-    # Drop all tables and recreate them
-    db.drop_all()
     db.create_all()
     
     # Create admin user if not exists
@@ -67,9 +57,9 @@ with app.app_context():
         db.session.add(admin)
         db.session.commit()
         print("✅ Database created successfully!")
-        print("✅ Admin user created:")
-        print("   Username: admin")
-        print("   Password: admin123")
+        print("✅ Admin user created: admin / admin123")
+    else:
+        print("✅ Database loaded successfully!")
 
 @app.route('/')
 def index():
@@ -131,13 +121,9 @@ def create():
     
     form = PostForm()
     if form.validate_on_submit():
-        # Handle image upload
         image_filename = None
         if form.image.data:
             image_filename = save_image(form.image.data)
-            if not image_filename:
-                flash('Invalid image file. Please try again.', 'error')
-                return render_template('create.html', form=form)
         
         post = Post(
             title=form.title.data,
@@ -163,17 +149,11 @@ def edit(post_id):
     form = PostForm()
     
     if form.validate_on_submit():
-        # Handle image upload
         if form.image.data:
-            # Delete old image if exists
             post.delete_image()
-            # Save new image
             image_filename = save_image(form.image.data)
             if image_filename:
                 post.image_filename = image_filename
-            else:
-                flash('Invalid image file. Please try again.', 'error')
-                return render_template('edit.html', form=form, post=post)
         
         post.title = form.title.data
         post.content = form.content.data
@@ -196,7 +176,6 @@ def delete(post_id):
         return redirect(url_for('index'))
     
     post = Post.query.get_or_404(post_id)
-    # Delete associated image
     post.delete_image()
     db.session.delete(post)
     db.session.commit()
